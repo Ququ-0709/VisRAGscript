@@ -4,7 +4,14 @@ from transformers.utils import ModelOutput
 from typing import Optional
 from ..modeling_minicpmv.modeling_minicpmv import MiniCPMV
 from concurrent.futures import ThreadPoolExecutor
-
+'''
+要在 VisRAG_Ret 的 forward 方法中返回一个标准格式的输出，可以自己定义 DROutput 类
+class DROutput(ModelOutput):
+    q_reps: Optional[torch.FloatTensor] = None
+    p_reps: Optional[torch.FloatTensor] = None
+    loss: Optional[torch.FloatTensor] = None
+    scores: Optional[torch.FloatTensor] = None
+    accuracy: Optional[torch.FloatTensor] = None'''
 
 def transform_image_mp(img_list, transform, device, max_workers=None):
     pixel_values = []
@@ -82,16 +89,31 @@ class VisRAG_Ret(MiniCPMV): # -> MiniCPMV ->  Ultimately a CausalLM
             images = []
         
         return content, images
-    
+    '''
+    改 forward() 接口，使它接受 input_ids 和 attention_mask
     def forward(
         self,
-        text, # List[str] B*str
-        image, # List[ PIL.Image ] B*PIL.Image, one image for each data
-        tokenizer,
-        vision_hidden_states=None,
-        max_inp_length=2048,
-        **kwargs):
-        
+        input_ids=None,
+        attention_mask=None,
+        image=None,
+        tokenizer=None,
+        mode="query",
+        **kwargs
+    ):
+
+    
+
+    '''
+    def forward(
+        self,
+        input_ids=None,
+        attention_mask=None,
+        image=None,
+        tokenizer=None,
+        mode="query",
+        **kwargs
+    ):
+
         processed_image = []
         processed_text = []
         
@@ -119,7 +141,19 @@ class VisRAG_Ret(MiniCPMV): # -> MiniCPMV ->  Ultimately a CausalLM
             attention_mask=model_inputs["attention_mask"],
             return_dict=True
         )
-        
+        '''
+        if mode == "query":
+            return DROutput(
+                q_reps=vlm_outputs.last_hidden_state,
+                p_reps=None
+            )
+        elif mode == "passage":
+            return DROutput(
+                q_reps=None,
+                p_reps=vlm_outputs.last_hidden_state
+            )
+
+        '''
         return BaseModelOutputWithAttentionMask(
             last_hidden_state=vlm_outputs.last_hidden_state,
             attention_mask=model_inputs.attention_mask

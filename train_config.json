@@ -1,0 +1,18 @@
+{
+    "model_name_or_path": "/media/mldadmin/home/s124mdg39_04/models/MiniCPM-V-2",
+    "output_dir": "./checkpoints/",
+    "per_device_train_batch_size": 8,
+    "learning_rate": 5e-5,
+    "num_train_epochs": 3,
+    "logging_steps": 50,
+    "save_steps": 1000,
+    "remove_unused_columns": false,
+    "fp16": true,
+
+    
+    "train_path": "openbmb/VisRAG-Ret-Train-Synthetic-data",
+    "q_max_len": 64,
+    "p_max_len": 64,
+    "from_hf_repo": true
+  }
+  
