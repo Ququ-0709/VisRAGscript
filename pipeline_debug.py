@@ -64,7 +64,6 @@ passages = [
     Image.open(os.path.join(script_dir, image_folder, 'cat.png')).convert('RGB'),
     Image.open(os.path.join(script_dir, image_folder, 'dog.png')).convert('RGB'),
     Image.open(os.path.join(script_dir, image_folder, 'elephant.png')).convert('RGB'),
-    
 ]
 
 
@@ -91,8 +90,6 @@ for i in range(len(topk_indices)):
         else:
             score_val = float(score_val)
         print(f"Score: {score_val:.4f} - Query {i} - Image {j}")
-       
-
 
 
 cpm_model = CPMModel.from_pretrained(generator_model_path, trust_remote_code=True).half().cuda()

@@ -19,6 +19,7 @@ from ..arguments import DataArguments
 from ..arguments import DRTrainingArguments as TrainingArguments
 from ..arguments import ModelArguments
 from openmatch.modeling.modeling_siglip.processing_siglip import SiglipProcessor
+from openmatch.modeling.modeling_minicpmv.modeling_minicpmv import MiniCPMV
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ class DROutput(ModelOutput):
 class DRModel(nn.Module):
     def __init__(
         self,
-        lm_q: PreTrainedModel,
+        lm_q: MiniCPMV,
         feature: str = "last_hidden_state",
         pooling: str = "lasttoken",
         attention: str = "causal",
@@ -276,7 +277,7 @@ class DRModel(nn.Module):
             vision_config = SiglipVisionConfig.from_pretrained(model_name_or_path)
             config = config_cls.from_text_vision_configs(text_config, vision_config)
         else:
-            config = config_cls.from_pretrained(model_name_or_path)
+            config = config_cls.from_pretrained(model_name_or_path, trust_remote_code=True)
         
         # add attention pattern 
         if model_args.attention == "bidirectional":
